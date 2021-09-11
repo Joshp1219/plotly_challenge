@@ -1,4 +1,3 @@
-//Load the json data and call functions to construct plots
 function init() {
     var selector = d3.select("#selDataset");
     d3.json("data/samples.json").then((data) => {
@@ -8,10 +7,8 @@ function init() {
             .text(name)
             .property("value", name);
     });
-    //Construct initial plots with the first data value
     createDemographics(data.names[0]);
     createChart(data.names[0]); 
-    // d3.selectAll("#selDataset").on("change", optionChanged);
 });
 };
 function createDemographics(id){
@@ -24,9 +21,7 @@ function createDemographics(id){
 }  
 function showDemographics(metadata){
     demographics = d3.select("#sample-metadata")
-    //clear the panel 
     demographics.html('');
-    //get the key/value pair
     Object.entries(metadata[0]).forEach(([key, value]) => {
         console.log(key);
         demographics.append("h5").text(`${key} : ${value}`)
@@ -36,7 +31,6 @@ function showDemographics(metadata){
 function createChart(id){
     d3.json("data/samples.json").then((data) => {
         var filtered = data.samples.filter(d => d.id.toString() === id)[0];
-        // Top ten OTU_ids and sample values
         var toptenOTU = filtered
                         .otu_ids.slice(0, 10)
                         .reverse()
@@ -47,8 +41,8 @@ function createChart(id){
                         .slice(0, 10)
                         .reverse()
                         .sort(function(a,b){return a-b;});
-        //Hover text
         var labels = filtered.otu_labels.slice(0, 10); 
+        
         //Build Bar charts     
         var trace = {
             x: toptenSample,
@@ -97,6 +91,7 @@ function createChart(id){
             width: 1000
         }
         Plotly.newPlot(bubble, [trace1], bubble_layout)
+        
         // Build guage chart
         var metadata = data.metadata.filter(d => d.id.toString() === id)[0];
         var wfreq = metadata.wfreq;
@@ -141,9 +136,3 @@ function optionChanged(id) {
    };
 
 init();
-
-
-// For each samples.id there are :
-    // samples.otu_ids
-    // samples.sample_values
-    // samples.otu_labels
